@@ -28,4 +28,22 @@ public class BookstoreService {
             System.out.println("Sold: " + item.getName());
         }
     }
+
+    public void applyDiscount(Long id, double percent) {
+        // 1. Fetch the item from the Pantry (Repository)
+        ProductEntity item = repository.findById(id);
+        if (item != null) {
+            // 2. Apply Business Logic (The math)
+            double oldPrice = item.getPrice();
+            double newPrice = oldPrice * (1 - percent);
+            item.setPrice(newPrice);
+            // 3. Update the Pantry (Save)
+            repository.save(item);
+
+            System.out.printf("Service: Discount applied to %s. Price dropped from $%.2f to $%.2f\n",
+                    item.getName(), oldPrice, newPrice);
+        } else {
+            System.out.println("Service Error: Item not found!");
+        }
+    }
 }

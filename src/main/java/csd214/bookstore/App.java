@@ -66,6 +66,7 @@ public class App {
                 case 4: sellItem(); break;
                 case 5: listAny(); break;
                 case 6: systemReset(); break; // New Bulk Delete Feature
+                case 7: discountFeature(); break; // Apply 10% Discount
                 case 99: System.out.println("Goodbye."); break;
                 default: System.out.println("Invalid choice.");
             }
@@ -336,6 +337,21 @@ public class App {
             return Integer.parseInt(line.trim());
         } catch (NumberFormatException e) {
             return -1;
+        }
+    }
+
+    public void discountFeature() {
+        listAny(); // Show the items
+        System.out.print("Enter index of item to discount: ");
+        int idx = getIntInput();
+
+        // Get the DB ID from the results list
+        List<ProductEntity> results = repository.findAll();
+        if(idx >= 0 && idx < results.size()) {
+            Long dbId = results.get(idx).getId();
+
+            // DELEGATE to the service (The Waiter tells the Chef what to do)
+            service.applyDiscount(dbId, 0.10);
         }
     }
 }
