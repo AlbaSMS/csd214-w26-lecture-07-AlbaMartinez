@@ -5,18 +5,21 @@ import csd214.bookstore.entities.*;
 import csd214.bookstore.pojos.*;
 import csd214.bookstore.repositories.IRepository;
 import csd214.bookstore.services.BookstoreService;
+import csd214.bookstore.services.*;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class App {
     private IRepository<ProductEntity> repository;
-    private BookstoreService service; // The Chef
+    private BookstoreService bookstoreService;
+    private PenService penService;
 
     // INJECTION: App doesn't use the 'new' keyword for repos anymore
-    public App(IRepository<ProductEntity> repository) {
+    public App(IRepository<ProductEntity> repository, BookstoreService bookstoreService, PenService penService) {
         this.repository = repository;
-        this.service = new BookstoreService(repository);
+        this.bookstoreService = bookstoreService;
+        this.penService = penService;
     }
     // UI & Logic
     private CashTill cashTill = new CashTill();
@@ -46,6 +49,7 @@ public class App {
             System.out.println(" 4. Sell item(s)");
             System.out.println(" 5. List items");
             System.out.println(" 6. System Reset (Wipe DB)");
+            System.out.println(" 7. Apply 10% Discount");
             System.out.println("99. Quit");
             System.out.println("***********************");
             System.out.print("Enter choice: ");
@@ -272,7 +276,7 @@ public class App {
 
         // 5. DELEGATION: Pass the ID to the Service (The Chef)
         // The App doesn't care HOW the sale happens, it just tells the service to do it.
-        service.performSale(dbId);
+        bookstoreService.performSale(dbId);
 
         // 6. Update the UI-side Cash Till
         // We create a temporary SaleableItem wrapper to pass the price to the Till
@@ -351,7 +355,7 @@ public class App {
             Long dbId = results.get(idx).getId();
 
             // DELEGATE to the service (The Waiter tells the Chef what to do)
-            service.applyDiscount(dbId, 0.10);
+            bookstoreService.applyDiscount(dbId, 0.10);
         }
     }
 }

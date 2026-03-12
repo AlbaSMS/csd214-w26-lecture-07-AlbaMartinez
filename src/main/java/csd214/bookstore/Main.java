@@ -1,6 +1,9 @@
 package csd214.bookstore;
 
+import csd214.bookstore.entities.ProductEntity;
 import csd214.bookstore.repositories.*;
+import csd214.bookstore.services.*;
+
 import java.util.Scanner;
 
 public class Main {
@@ -13,7 +16,7 @@ public class Main {
         System.out.print("Choice: ");
 
         int choice = sc.nextInt();
-        IRepository repository;
+        IRepository<ProductEntity> repository = new MySqlRepository();
 
         // WIRING PHASE
         switch (choice) {
@@ -22,8 +25,11 @@ public class Main {
             default: repository = new InMemoryRepository(); break;
         }
 
+        BookstoreService bookstoreService = new BookstoreService(repository);
+        PenService penService = new PenService(repository);
+
         // INJECTION PHASE
-        App app = new App(repository);
+        App app = new App(repository, bookstoreService, penService);
         try {
             app.run();
         } finally {
