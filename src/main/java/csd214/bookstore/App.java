@@ -50,6 +50,7 @@ public class App {
             System.out.println(" 5. List items");
             System.out.println(" 6. System Reset (Wipe DB)");
             System.out.println(" 7. Apply 10% Discount");
+            System.out.println(" 8. Update Pen Color");
             System.out.println("99. Quit");
             System.out.println("***********************");
             System.out.print("Enter choice: ");
@@ -71,6 +72,7 @@ public class App {
                 case 5: listAny(); break;
                 case 6: systemReset(); break; // New Bulk Delete Feature
                 case 7: discountFeature(); break; // Apply 10% Discount
+                case 8: penColorFeature(); break; // Update Pen Color
                 case 99: System.out.println("Goodbye."); break;
                 default: System.out.println("Invalid choice.");
             }
@@ -356,6 +358,18 @@ public class App {
 
             // DELEGATE to the service (The Waiter tells the Chef what to do)
             bookstoreService.applyDiscount(dbId, 0.10);
+        }
+    }
+
+    public void penColorFeature() {
+        listAny();
+        System.out.print("Enter index of Pen to customize: ");
+        int idx = getIntInput();
+        List<ProductEntity> results = repository.findAll();
+        if(idx >= 0 && idx < results.size()) {
+            System.out.print("Enter new ink color: ");
+            String color = input.nextLine();
+            penService.updatePenColor(results.get(idx).getId(), color);
         }
     }
 }
